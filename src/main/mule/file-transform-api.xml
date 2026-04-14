@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="e3b21f68-e8c6-4c23-a57f-cd97f4d32f71" >
+		<http:listener-connection host="0.0.0.0" port="8082" />
+	</http:listener-config>
+	<file:config name="File_Config" doc:name="File Config" doc:id="9d857c33-c5d8-4c49-b682-eafadff63c19" >
+		<file:connection />
+	</file:config>
+	<flow name="file-transform-apiFlow" doc:id="52b4aa0c-3bd5-482a-9dc7-1a113c716624" >
+		<http:listener doc:name="Listener" doc:id="bd89e0ba-a019-4063-9d46-3ab210ef8cca" config-ref="HTTP_Listener_config" path="/files"/>
+		<logger level="INFO" doc:name="Logger" doc:id="f016a4de-c0ca-4cb8-95db-230dbf1ed7da" message='"File input recieved"'/>
+		<ee:transform doc:name="Transform Message" doc:id="dbc2a25e-465c-42cf-b3cf-ee451513dcdf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/xlsx
+---
+payload]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<file:write doc:name="Write" doc:id="01ab34d2-2624-4164-b4f3-ac8312e883ea" mode="CREATE_NEW" path='#["E:/Ammu/Courses/Output/usaflights_" ++ (now() as String {format: "yyyyMMdd_HHmmss"}) ++ ".xlsx"]'/>
+	</flow>
+</mule>

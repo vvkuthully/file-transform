@@ -1,0 +1,41 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="excel" format="excel">
+      <types:shape format="weave"><![CDATA[%dw 2.0
+
+type excel = {|
+  Sheet2?: Array<{|    "Product Name": String,     "Product Sub-Category": String,     "Product Category": String,     "Customer Segment": String,     "Customer Name": String  |}>
+|}
+
+]]></types:shape>
+    </types:type>
+    <types:type name="txt" format="json">
+      <types:shape format="weave" example="examples/txt_op.json"><![CDATA[%dw 2.0
+
+type txt = {|
+  ProductName: String, 
+  ProductSubCategory: String, 
+  ProductCategory: String, 
+  CustomerSegment: String, 
+  CustomerName: String
+|} {"example": "{\\\"ProductName\\\":\\\"SANFORD Liquid Accent\u2122 Tank-Style Highlighters\\\",\\\"ProductSubCategory\\\":\\\"Pens & Art Supplies\\\",\\\"ProductCategory\\\":\\\"Office Supplies\\\",\\\"CustomerSegment\\\":\\\"Corporate\\\",\\\"CustomerName\\\":\\\"Bonnie Potter\\\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#a5696ec7-1a8b-4d7c-bfca-e16eeb4ea07c">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="excel"/>
+        </types:message>
+      </types:input-event>
+      <types:output-event>
+        <types:message>
+          <types:payload type="txt"/>
+        </types:message>
+      </types:output-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>
